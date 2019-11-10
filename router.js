@@ -1,7 +1,7 @@
 let express = require('express');
 let router = express.Router();
 router.get('/', function (req, res) {
-    res.send('欢迎使用 ccl_blog_api');
+    res.send('欢迎使用 ccl_blog_api_cc');
 });
 
 router.get('/v1/album', function (req, res) {
