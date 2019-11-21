@@ -4,11 +4,18 @@ let fs = require('fs');
 let path = require('path');
 let router = require('./router');
 app.all("*",function (req,res,next) {
-    res.header('Access-Control-Allow-Origin', req.headers.origin);
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type');
-    res.header('Access-Control-Allow-Credentials','true');
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Content-Length, Accept, X-Requested-With , token');
+    res.header("Access-Control-Allow-Methods", "PUT,POST,GET,DELETE,OPTIONS");
+    res.header("X-Powered-By", ' 3.2.1')
+    res.header("Content-Type", "application/json;charset=utf-8");
     next();
+});
+
+// 解析token获取用户信息
+app.use(function(req, res, next) {
+    var token = req.headers['token'];
+    return next();
 });
 app.use('/public/', express.static(path.join(__dirname,'./public/')));
 app.use('/demo/', express.static(path.join(__dirname,'./demo/')));

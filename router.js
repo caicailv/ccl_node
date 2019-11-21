@@ -1,15 +1,55 @@
 let express = require('express');
 let router = express.Router();
+let multiparty = require("multiparty");
+let fs = require('fs');
 router.get('/', function (req, res) {
     res.send('欢迎使用 ccl_blog_api_cc');
 });
-
+/* 上传 */
+router.post('/file/uploading', function (req, res, next) {
+    /* 生成multiparty对象，并配置上传目标路径 */
+    var form = new multiparty.Form();
+    /* 设置编辑 */
+    form.encoding = 'utf-8';
+    //设置文件存储路径
+    form.uploadDir = './public/files';
+    //设置文件大小限制
+    form.maxFilesSize = 2 * 1024 * 1024;
+    // form.maxFields = 1000;  //设置所有文件的大小总和
+    //上传后处理
+    form.parse(req, function (err, fields, files) {
+        var filesTemp = JSON.stringify(files, null, 2);
+        if (err) {
+            console.log('parse error:' + err);
+        } else {
+            // 上传成功
+            console.log('上传成功:' + filesTemp);
+            // var inputFile = files.inputFile[0];
+            var uploadedPath = files.file[0].path;//拿到文件路径
+            console.log('原路径:' + uploadedPath);
+            var dstPath = './public/files/' + files.file[0].originalFilename;//拿到文件名
+            console.log('新路径:' + dstPath);
+            //重命名为真实文件名
+            fs.rename(uploadedPath, dstPath, function (err) {
+                if (err) {
+                    console.log('rename error:' + err);
+                } else {
+                    console.log('rename ok');
+                }
+            })
+        }
+        //   res.writeHead(200, {'content-type': 'text/plain;charset=utf-8'});
+        //   res.write('received upload:\n\n');
+        //   res.end(util.inspect({fields: fields, files: filesTemp}))
+        res.end('123');
+    })
+})
 router.get('/v1/album', function (req, res) {
     res.json(
         [
             {
                 id: 1,
-                title: "今天和傻屌出去玩",
+                title: "今天傻屌出去玩",
                 img_scr: 'http://localhost:3001/public/img/1.jpg'
             },
             {
