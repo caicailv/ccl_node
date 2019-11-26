@@ -1,0 +1,100 @@
+安装与创建版本库:
+
+1. 安装git   
+    window安装git  https://git-scm.com/downloads
+    在开始菜单 输入git 有 git bash的选项 说明安装成功
+2. 设置自己的名字和邮箱
+    $ git config --global user.name "Your Name"
+    $ git config --global user.email "email@example.com"
+3. 在本地创建一个版本库
+    使某个文件夹变成版本库
+    $ git init  
+    Initialized empty Git repository in /Users/michael/learngit/.git/
+
+
+对本地版本库的文件的增删改查:
+
+4. 把文件添加进版本库
+        先把文件放到版本库文件夹内
+        $ git add '文件夹名称'
+5. 提交到版本库
+        -m 后面跟改动说明 必须填写有意义的改动
+        $ git commit -m "这是一条本次改动的说明"
+        可以多次 git add 然后再 git commit
+6. 查看版本库当前状态
+    $ git status
+7. 查看改动了的内容
+    $ git diff
+8. 查看最近更新日志
+    $ git log
+    简略模式:
+    $git log --pretty=oneline
+9. 回退版本 
+    回退上一个版本
+    $ git reset --hard HEAD
+
+    回退上两个版本
+    $ git reset --hard HEAD^^
+
+    回退上N个个版本
+    $ git reset --hard HEAD~N
+
+    再回去 HEAD变成指定的版本号,前几位就可以 (命令行没关的时候)
+    $ git reset --hard 1094a
+    
+10. 查看git历史操作命令和操作生成的 commit_id,根据此id 可以滚回那个版本
+    $ git reflog
+    $ git reset --hard 1094a
+11. git add实质上是把文件放入缓存区, git commit 是把缓存区的内容提交
+
+12. 查看工作区内容和版本库内最新版本的不同
+    $ git diff HEAD -- readme.txt
+13. 还原工作区 
+    $ git checkout -- <file> 
+    回到最近一次 git add 或git commit 时文件的状态
+        git checkout其实是用版本库里的版本替换工作区的版本，无论工作区是修改还是删除，都可以“一键还原”。
+
+14. 撤销暂存区内的修改,放回工作区
+    $ git reset HEAD <file>
+
+15. 删除文件 
+    $ git rm <file>
+
+远程仓库:
+
+1.  创建SSH Key。
+2.  创建githup账号,
+3.  githup主页的 设置中(settings) =>
+    accunt=> SSH and GPG keys 把本地的sshkey添加进去
+4.  关联一个远程库 
+    $ git remote add origin git@server-name:path/repo-name.git
+
+    删除关联的远程库 
+    $ git remote rm origin
+
+5. 将本地代码推送到远程库
+    第一次 $ git push -u origin master
+    正常 $ git push origin master
+
+6. 从远程仓库克隆
+$ git clone git@server-name:path/repo-name.git
+
+
+分支:
+1. 创建分支
+    创建并切换到dev分支
+    $ git checkout -b dev
+
+2. 查看分支
+    $ git branch
+
+3. 切换分支
+    $  git checkout 分支名称
+
+4. 合并分支上的内容到当前分支(覆盖当前分支上的内容)
+    $ git merge dev
+
+5. 删除一个分支
+    $ git branch -d 分支名称
+
+

@@ -1,11 +1,13 @@
 let express = require('express');
 let router = express.Router();
 let multiparty = require("multiparty");
+let path = require('path');
 let fs = require('fs');
+let serverConfig = require('./serverConfig');
 router.get('/', function (req, res) {
     res.send('欢迎使用 ccl_blog_api_cc');
 });
-/* 上传 */
+/* 上传图片 */
 router.post('/file/uploading', function (req, res, next) {
     /* 生成multiparty对象，并配置上传目标路径 */
     var form = new multiparty.Form();
@@ -34,16 +36,19 @@ router.post('/file/uploading', function (req, res, next) {
                 if (err) {
                     console.log('rename error:' + err);
                 } else {
-                    console.log('rename ok');
+                    res.json({
+                        status: true,
+                        data: {
+                            url: `http://localhost:${serverConfig.localhost}${dstPath.substring(1, dstPath.length)}`,
+                        }
+                    });
                 }
             })
         }
-        //   res.writeHead(200, {'content-type': 'text/plain;charset=utf-8'});
-        //   res.write('received upload:\n\n');
-        //   res.end(util.inspect({fields: fields, files: filesTemp}))
-        res.end('123');
+
     })
 })
+
 router.get('/v1/album', function (req, res) {
     res.json(
         [
