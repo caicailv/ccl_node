@@ -15,8 +15,9 @@ router.get('/setdata', function (req, res) {
 /* 
 
 */
-router.post("/add_skill", (req, res) => {
+router.post("/add_skill", (req, res) => { 
     console.log(req.body);
+    
     res.json({
          status:true,
          msg:'添加博客成功'
