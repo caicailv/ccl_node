@@ -48,7 +48,7 @@ router.post('/file/uploading', function (req, res, next) {
 
     })
 })
-
+// 相册展示 
 router.get('/v1/album', function (req, res) {
     res.json(
         [
