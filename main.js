@@ -6,7 +6,8 @@ let bodyParser = require('body-parser');
 let serverConfig = require('./serverConfig');
 let router = require('./router');
 let setdata = require('./router/setData');
-
+let b = require('./com');
+console.log(b);
 app.all("*",function (req,res,next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header('Access-Control-Allow-Headers', 'Content-Type, Content-Length, Accept, X-Requested-With , token');

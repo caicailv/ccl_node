@@ -4,6 +4,7 @@ let multiparty = require("multiparty");
 let path = require('path');
 let fs = require('fs');
 let serverConfig = require('../serverConfig');
+let mongoose = require('../model/mong');
 // const glob = require('glob');
 router.get('/setdata', function (req, res) {
     res.json({
@@ -13,10 +14,15 @@ router.get('/setdata', function (req, res) {
 });
 // 添加一条技术博客
 /* 
+1. 提取参数
+2. 存入数据库
+设计数据库存入规则
+
 
 */
+// console.log(mongoose);
 router.post("/add_skill", (req, res) => { 
-    console.log(req.body);
+    // console.log(req.body);
     
     res.json({
          status:true,
