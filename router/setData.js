@@ -6,18 +6,18 @@ let fs = require('fs');
 let serverConfig = require('../serverConfig');
 // const glob = require('glob');
 router.get('/setdata', function (req, res) {
-    res.json({
+    res.json({ 
         status: true,
         msg: '这是一个测试setdata接口'
     })
 });
-// 添加一条技术博客
+// 添加一条技术博客aaaa
 /* 
 
 */
 router.post("/add_skill", (req, res) => { 
     console.log(req.body);
-    
+
     res.json({
          status:true,
          msg:'添加博客成功'
