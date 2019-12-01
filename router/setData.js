@@ -12,7 +12,7 @@ router.get('/setdata', function (req, res) {
     })
 });
 // 添加一条技术博客aaaa
-/* 
+/* 啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊
 
 */
 router.post("/add_skill", (req, res) => { 
