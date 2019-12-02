@@ -28,9 +28,9 @@ router.post('/file/uploading', function (req, res, next) {
             console.log('上传成功:' + filesTemp);
             // var inputFile = files.inputFile[0];
             var uploadedPath = files.file[0].path;//拿到文件路径
-            console.log('原路径:' + uploadedPath);
+            // console.log('原路径:' + uploadedPath);
             var dstPath = './public/files/' + files.file[0].originalFilename;//拿到文件名
-            console.log('新路径:' + dstPath);
+            // console.log('新路径:' + dstPath);
             //重命名为真实文件名
             fs.rename(uploadedPath, dstPath, function (err) {
                 if (err) {

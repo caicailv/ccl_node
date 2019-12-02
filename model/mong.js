@@ -3,6 +3,7 @@ let mongoose = require("mongoose");
 let Schema = mongoose.Schema;
 // 设置连接路径
 const mongodbUrl = "mongodb://localhost/blog";
+
 // 连接数据库
 mongoose.connect(
     mongodbUrl,
@@ -18,7 +19,7 @@ db.on('connected', function (err) {
     if (err) {
         console.log('连接数据库失败!');
     } else {
-        console.log('连接数据库成功!');
+        // console.log('连接数据库成功!');
     }
 });
 // 生成schema(数据库约束)
@@ -28,7 +29,6 @@ const blogSchema = new Schema({
         type: String,
     },
     content: {
-        required: true,
         type: String
     },
     date: {
@@ -38,11 +38,56 @@ const blogSchema = new Schema({
     },
     type: {
         required: true,
-        type: String,
+        type: Array,
     },
-    // img_url: [
-    //     { type: String }
-    // ]
+    img_arr: { type: Array }
 });
 // 生成数据库
-module.exports = mongoose.model('blog', blogSchema); 
+const Blog = mongoose.model('blog', blogSchema);
+
+// 添加数据
+function add(list, callback) {
+    new Blog({
+        title: list.title,
+        content: list.content,
+        type: list.type,
+        img_arr: list.img_arr
+    }).save((err, ret) => {
+        if (err) {
+            callback(err)
+        } else {
+            callback()
+        }
+    });
+}
+// 删除
+// function remove(){
+
+// }
+// 编辑
+
+// 查询所有
+function find(callback) {
+    Blog.find((err, ret) => {
+        if (err) {
+            callback(err)
+        } else {
+            callback(null, ret)
+        }
+    })
+}
+// 查询单个
+function findById(id,callback) {
+    Blog.findById(id,(err, ret) => {
+        if (err) {
+            callback(err)
+        } else {
+            callback(null, ret)
+        }
+    })
+}
+
+module.exports = {
+    add,
+    find,
+}
