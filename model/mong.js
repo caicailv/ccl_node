@@ -38,56 +38,11 @@ const blogSchema = new Schema({
     },
     type: {
         required: true,
-        type: Array,
+        type: String,
     },
     img_arr: { type: Array }
 });
 // 生成数据库
 const Blog = mongoose.model('blog', blogSchema);
 
-// 添加数据
-function add(list, callback) {
-    new Blog({
-        title: list.title,
-        content: list.content,
-        type: list.type,
-        img_arr: list.img_arr
-    }).save((err, ret) => {
-        if (err) {
-            callback(err)
-        } else {
-            callback()
-        }
-    });
-}
-// 删除
-// function remove(){
-
-// }
-// 编辑
-
-// 查询所有
-function find(callback) {
-    Blog.find((err, ret) => {
-        if (err) {
-            callback(err)
-        } else {
-            callback(null, ret)
-        }
-    })
-}
-// 查询单个
-function findById(id,callback) {
-    Blog.findById(id,(err, ret) => {
-        if (err) {
-            callback(err)
-        } else {
-            callback(null, ret)
-        }
-    })
-}
-
-module.exports = {
-    add,
-    find,
-}
+module.exports = Blog;

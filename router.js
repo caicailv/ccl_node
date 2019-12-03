@@ -4,6 +4,10 @@ let multiparty = require("multiparty");
 let path = require('path');
 let fs = require('fs');
 let serverConfig = require('./serverConfig');
+// 导入时间处理工具 moment
+const moment = require('moment');
+let Blog = require('./model/mong');
+
 router.get('/', function (req, res) {
     res.send('欢迎使用 ccl_blog_api_cc');
 });
@@ -160,4 +164,44 @@ router.get('/v1/album', function (req, res) {
         ]
     )
 });
+// 添加一条博客 
+router.post("/add_blog", (req, res) => {
+    new Blog(req.body).save((err, ret) => {
+        if (err) {
+            res.json({
+                status: false,
+                msg: err
+            });
+        } else {
+            res.json({
+                status: true,
+                msg: '添加成功'
+            });
+        }
+    });
+});
+// 查询博客列表
+/* 
+    query: 查询条件
+*/
+router.get('/query_blog', (req, res) => {
+    Blog.find(req.query, (err, ret) => {
+        console.log(req.query);
+        if (err !== null) {
+            res.json({
+                status: false,
+                msg: '查询失败'
+            })
+        } else {
+            let arr = JSON.parse(JSON.stringify(ret));
+            arr.forEach(el => {
+                el.date = moment(el.date).format("YYYY-MM-DD hh:mm");
+            });
+            res.json({
+                status: true,
+                data: arr
+            })
+        }
+    })
+})
 module.exports = router; 

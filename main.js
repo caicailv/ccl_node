@@ -5,7 +5,6 @@ let path = require('path');
 let bodyParser = require('body-parser'); 
 let serverConfig = require('./serverConfig');
 let router = require('./router');
-let setdata = require('./router/setData');
 
 app.all("*",function (req,res,next) {
     res.header("Access-Control-Allow-Origin", "*");
@@ -29,7 +28,7 @@ app.use('/public/', express.static(path.join(__dirname, './public/')));
 app.use('/demo/', express.static(path.join(__dirname, './demo/')));
 app.use('/dist/', express.static(path.join(__dirname, './dist/')));
 app.use('/static/', express.static(path.join(__dirname, './dist/static')));
-app.use(router,setdata);
+app.use(router);
 
 app.listen(serverConfig.localhost, function () {
     console.log('ccl_blog服务器启动成功' + serverConfig.localhost);
