@@ -52,118 +52,6 @@ router.post('/file/uploading', function (req, res, next) {
 
     })
 })
-// 相册展示 
-router.get('/v1/album', function (req, res) {
-    res.json(
-        [
-            {
-                id: 1,
-                title: "今天傻屌出去玩",
-                img_scr: 'http://localhost:3001/public/img/1.jpg'
-            },
-            {
-                id: 2,
-                title: "今天和傻屌出去玩",
-                img_scr: 'http://localhost:3001/public/img/2.jpg'
-            },
-            {
-                id: 3,
-                title: "今天和傻屌出去玩",
-                img_scr: 'http://localhost:3001/public/img/3.jpg'
-            },
-            {
-                id: 4,
-                title: "今天和傻屌出去玩",
-                img_scr: 'http://localhost:3001/public/img/4.jpg'
-            },
-            {
-                id: 5,
-                title: "今天和傻屌出去玩",
-                img_scr: 'http://localhost:3001/public/img/5.jpg'
-            },
-            {
-                id: 6,
-                title: "今天和傻屌出去玩",
-                img_scr: 'http://localhost:3001/public/img/6.jpg'
-            },
-            {
-                id: 7,
-                title: "今天和傻屌出去玩",
-                img_scr: 'http://localhost:3001/public/img/7.jpg'
-            },
-            {
-                id: 8,
-                title: "今天和傻屌出去玩",
-                img_scr: 'http://localhost:3001/public/img/8.jpg'
-            },
-            {
-                id: 9,
-                title: "今天和傻屌出去玩",
-                img_scr: 'http://localhost:3001/public/img/9.jpg'
-            },
-            {
-                id: 10,
-                title: "今天和傻屌出去玩",
-                img_scr: 'http://localhost:3001/public/img/10.jpg'
-            },
-            {
-                id: 11,
-                title: "今天和傻屌出去玩",
-                img_scr: 'http://localhost:3001/public/img/10.jpg'
-            },
-            {
-                id: 12,
-                title: "今天和傻屌出去玩",
-                img_scr: 'http://localhost:3001/public/img/10.jpg'
-            },
-            {
-                id: 13,
-                title: "今天和傻屌出去玩",
-                img_scr: 'http://localhost:3001/public/img/10.jpg'
-            },
-            {
-                id: 14,
-                title: "今天和傻屌出去玩",
-                img_scr: 'http://localhost:3001/public/img/10.jpg'
-            },
-            {
-                id: 15,
-                title: "今天和傻屌出去玩",
-                img_scr: 'http://localhost:3001/public/img/10.jpg'
-            },
-            {
-                id: 16,
-                title: "今天和傻屌出去玩",
-                img_scr: 'http://localhost:3001/public/img/10.jpg'
-            },
-            {
-                id: 17,
-                title: "今天和傻屌出去玩",
-                img_scr: 'http://localhost:3001/public/img/10.jpg'
-            },
-            {
-                id: 18,
-                title: "今天和傻屌出去玩",
-                img_scr: 'http://localhost:3001/public/img/10.jpg'
-            },
-            {
-                id: 19,
-                title: "今天和傻屌出去玩",
-                img_scr: 'http://localhost:3001/public/img/10.jpg'
-            },
-            {
-                id: 20,
-                title: "今天和傻屌出去玩",
-                img_scr: 'http://localhost:3001/public/img/10.jpg'
-            },
-            {
-                id: 21,
-                title: "今天和傻屌出去玩",
-                img_scr: 'http://localhost:3001/public/img/10.jpg'
-            },
-        ]
-    )
-});
 // 添加一条博客 
 router.post("/add_blog", (req, res) => {
     new Blog(req.body).save((err, ret) => {
@@ -186,7 +74,7 @@ router.post("/add_blog", (req, res) => {
 */
 router.get('/query_blog', (req, res) => {
     Blog.find(req.query, (err, ret) => {
-        console.log(req.query);
+        // console.log(req.query);
         if (err !== null) {
             res.json({
                 status: false,
@@ -196,6 +84,7 @@ router.get('/query_blog', (req, res) => {
             let arr = JSON.parse(JSON.stringify(ret));
             arr.forEach(el => {
                 el.date = moment(el.date).format("YYYY-MM-DD hh:mm");
+                // el.content = el.content.substr(0,30)+"...";
             });
             res.json({
                 status: true,
@@ -204,4 +93,25 @@ router.get('/query_blog', (req, res) => {
         }
     })
 })
+/* 
+    查询博客详情
+    _id : 博客id
+*/
+router.get('/query_blogdetail', (req, res) => {
+    Blog.findOne(req.query, (err, doc) => {
+        if (err !== null) {
+            res.json({
+                status: false,
+                msg: '查询失败'
+            })
+        } else {
+            let obj = JSON.parse(JSON.stringify(doc));
+            obj.date = moment(obj.date).format("YYYY-MM-DD hh:mm");
+            res.json({
+                status: true,
+                data:obj
+            })
+        }
+    })
+});
 module.exports = router; 
