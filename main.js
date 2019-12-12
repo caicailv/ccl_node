@@ -5,7 +5,6 @@ let path = require('path');
 let bodyParser = require('body-parser'); 
 let serverConfig = require('./serverConfig');
 let router = require('./router');
-
 app.all("*",function (req,res,next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header('Access-Control-Allow-Headers', 'Content-Type, Content-Length, Accept, X-Requested-With , token');
@@ -14,12 +13,12 @@ app.all("*",function (req,res,next) {
     next();
 });
 
-
 // 解析token获取用户信息
 app.use(function (req, res, next) {
     var token = req.headers['token'];
     return next();
 });
+global.token = 1423;
 // 挂载bodyParse 以便接受post参数
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());

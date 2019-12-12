@@ -22,7 +22,7 @@ db.on('connected', function (err) {
         // console.log('连接数据库成功!');
     }
 });
-// 生成schema(数据库约束)
+// 生成blog_schema(数据库约束)
 const blogSchema = new Schema({
     title: {
         required: true,
@@ -42,7 +42,19 @@ const blogSchema = new Schema({
     },
     img_arr: { type: Array }
 });
-// 生成数据库
+// 生成数据表
 const Blog = mongoose.model('blog', blogSchema);
 
-module.exports = Blog;
+const PassWord = mongoose.model('pass_word',
+    new Schema({
+        token: {
+            required: true,
+            type: String
+        }
+    }));
+
+
+module.exports = {
+    Blog, PassWord
+}
+// module.exports.blog = ;

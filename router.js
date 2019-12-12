@@ -4,9 +4,11 @@ let multiparty = require("multiparty");
 let path = require('path');
 let fs = require('fs');
 let serverConfig = require('./serverConfig');
+let jwt = require('jsonwebtoken');//生成token工具
 // 导入时间处理工具 moment
 const moment = require('moment');
-let Blog = require('./model/mong');
+let Blog = require('./model/mong').Blog;
+let PassWord = require('./model/mong').PassWord;
 
 router.get('/', function (req, res) {
     res.send('欢迎使用 ccl_blog_api_cc');
@@ -109,9 +111,33 @@ router.get('/query_blogdetail', (req, res) => {
             obj.date = moment(obj.date).format("YYYY-MM-DD hh:mm");
             res.json({
                 status: true,
-                data:obj
+                data: obj
             })
         }
     })
+});
+/* 
+    登录
+*/
+router.post('/password', (req, res) => {
+    // console.log(req.headers.token);
+    if (req.body.password === serverConfig.password) {
+        // 密码正确,生成token
+
+        jwt.sign({
+            'password': req.body.password
+        }, 'abcdefg', function (err, token) {
+            // 存至数据库 返回给前端
+            res.json({
+                state: true,
+                data: {
+                    token
+                }
+            });
+        })
+
+
+
+    }
 });
 module.exports = router; 
