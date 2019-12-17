@@ -120,24 +120,64 @@ router.get('/query_blogdetail', (req, res) => {
     登录
 */
 router.post('/password', (req, res) => {
+
     // console.log(req.headers.token);
     if (req.body.password === serverConfig.password) {
         // 密码正确,生成token
-
         jwt.sign({
             'password': req.body.password
         }, 'abcdefg', function (err, token) {
             // 存至数据库 返回给前端
-            res.json({
-                state: true,
-                data: {
-                    token
+            PassWord.findOne({}, function (err, ret) {
+                if (err) {
+                    res.json({
+                        status: false,
+                        msg: '生成token失败'
+                    })
+                } else {
+                    // 如果没有,则新增
+                    if (ret === null) {
+                        new PassWord({
+                            token
+                        }).save((err, ret) => {
+                            if (err) {
+                                res.json({
+                                    status: false,
+                                    msg: '生成token失败'
+                                })
+
+                            } else {
+                                res.json({
+                                    state: true,
+                                    data: token
+                                });
+                            }
+                        })
+                    } else {
+                        //如果有,则替换
+                        PassWord.findOneAndUpdate(ret._id, token, (err, ret) => {
+                            if (err) {
+                                res.json({
+                                    status: false,
+                                    msg: '生成token失败'
+                                })
+                            } else {
+                                res.json({
+                                    state: true,
+                                    data: token
+                                });
+                            }
+                        })
+
+                    }
                 }
-            });
+            })
         })
-
-
-
+    } else {
+        res.json({
+            state: false,
+            msg: '密码错误!'
+        });
     }
 });
 module.exports = router; 
