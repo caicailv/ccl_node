@@ -31,12 +31,9 @@ router.post('/file/uploading', function (req, res, next) {
             console.log('parse error:' + err);
         } else {
             // 上传成功
-            console.log('上传成功:' + filesTemp);
             // var inputFile = files.inputFile[0];
             var uploadedPath = files.file[0].path;//拿到文件路径
-            // console.log('原路径:' + uploadedPath);
             var dstPath = './public/files/' + files.file[0].originalFilename;//拿到文件名
-            // console.log('新路径:' + dstPath);
             //重命名为真实文件名
             fs.rename(uploadedPath, dstPath, function (err) {
                 if (err) {
@@ -56,19 +53,67 @@ router.post('/file/uploading', function (req, res, next) {
 })
 // 添加一条博客 
 router.post("/add_blog", (req, res) => {
-    new Blog(req.body).save((err, ret) => {
-        if (err) {
-            res.json({
-                status: false,
-                msg: err
+    // token验证
+    const token = req.headers.token;
+    testToken(token, (ret) => {
+        if (ret.status) {
+            let params = req.body;
+            delete params._id;
+            params = JSON.parse(JSON.stringify(params));
+            new Blog(params).save((err, ret) => {
+                if (err) {
+                    res.json({
+                        status: false,
+                        msg: err
+                    });
+                } else {
+                    res.json({
+                        status: true,
+                        msg: '添加成功'
+                    });
+                }
             });
+
         } else {
             res.json({
-                status: true,
-                msg: '添加成功'
-            });
+                status: false,
+                msg: ret.msg
+            })
         }
-    });
+
+    })
+});
+// 修改
+router.post("/emit_blog", (req, res) => {
+    // token验证
+    const token = req.headers.token;
+    testToken(token, (ret) => {
+        if (ret.status) {
+            let _id = req.body._id;
+            delete req.body._id;
+            Blog.findOneAndUpdate(_id, req.body, { useFindAndModify: false }, (err, ret) => {
+                if (err) {
+                    res.json({
+                        status: false,
+                        msg: ret.msg
+                    })
+                } else {
+                    res.json({
+                        status: true,
+                        msg: '修改成功'
+                    })
+
+                }
+            })
+
+        } else {
+            res.json({
+                status: false,
+                msg: ret.msg
+            })
+        }
+
+    })
 });
 // 查询博客列表
 /* 
@@ -76,7 +121,6 @@ router.post("/add_blog", (req, res) => {
 */
 router.get('/query_blog', (req, res) => {
     Blog.find(req.query, (err, ret) => {
-        // console.log(req.query);
         if (err !== null) {
             res.json({
                 status: false,
@@ -120,8 +164,6 @@ router.get('/query_blogdetail', (req, res) => {
     登录
 */
 router.post('/password', (req, res) => {
-
-    // console.log(req.headers.token);
     if (req.body.password === serverConfig.password) {
         // 密码正确,生成token
         jwt.sign({
@@ -148,14 +190,14 @@ router.post('/password', (req, res) => {
 
                             } else {
                                 res.json({
-                                    state: true,
+                                    status: true,
                                     data: token
                                 });
                             }
                         })
                     } else {
                         //如果有,则替换
-                        PassWord.findOneAndUpdate(ret._id, token, (err, ret) => {
+                        PassWord.findOneAndUpdate(res.id, { token }, { useFindAndModify: false }, (err, ret) => {
                             if (err) {
                                 res.json({
                                     status: false,
@@ -163,7 +205,7 @@ router.post('/password', (req, res) => {
                                 })
                             } else {
                                 res.json({
-                                    state: true,
+                                    status: true,
                                     data: token
                                 });
                             }
@@ -175,9 +217,39 @@ router.post('/password', (req, res) => {
         })
     } else {
         res.json({
-            state: false,
+            status: false,
             msg: '密码错误!'
         });
     }
 });
+// 验证token
+function testToken(token, callback) {
+    // 取出数据库的token
+    PassWord.find({}, (err, ret) => {
+        if (err) {
+            callback({
+                status: false,
+                msg: '查询数据库内token出错'
+            })
+        } else {
+            let mongodToken = ret[0].token;
+            if (mongodToken === token) {
+                callback({
+                    status: true,
+                    msg: '验证成功'
+                })
+
+            } else {
+                callback({
+                    status: false,
+                    msg: '验证信息不匹配'
+                });
+
+            }
+
+        }
+    })
+};
+
+
 module.exports = router; 
