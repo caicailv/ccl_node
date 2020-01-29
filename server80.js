@@ -2,7 +2,7 @@ let express = require('express');
 let app = express();
 var fs = require("fs");
 let path = require('path');
-let severLocalhost = 8080;
+let severLocalhost = 80;
 app.use('/static', express.static(path.join(__dirname, './dist/static')));
 app.get('/', function (req, res) {
     fs.readFile("./dist/index.html", function (err, data) {
