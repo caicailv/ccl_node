@@ -30,5 +30,5 @@ app.use('/static/', express.static(path.join(__dirname, './dist/static')));
 app.use(router);
 
 app.listen(serverConfig.localhost, function () {
-    console.log('ccl_blog服务器启动成功' + serverConfig.localhost);
+    console.log('ccl_blog node服务器启动成功' + serverConfig.localhost);
 })

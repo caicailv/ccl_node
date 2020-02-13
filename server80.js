@@ -19,5 +19,5 @@ app.get('/', function (req, res) {
 
 })
 app.listen(severLocalhost, function () {
-    console.log('ccl_blog服务器启动成功' + severLocalhost);
+    console.log('ccl_blo前端服务服务启动成功' + severLocalhost);
 })

@@ -116,6 +116,36 @@ router.post("/emit_blog", (req, res) => {
 
     })
 });
+// 删除
+// router.post('/delete_blog',(req,res)=>{
+//     testToken(token, (ret) => {
+//         if (ret.status) {
+//             let _id = req.body._id;
+//             delete req.body._id;
+//             Blog.findOneAndUpdate(_id, req.body, { useFindAndModify: false }, (err, ret) => {
+//                 if (err) {
+//                     res.json({
+//                         status: false,
+//                         msg: ret.msg
+//                     })
+//                 } else {
+//                     res.json({
+//                         status: true,
+//                         msg: '修改成功'
+//                     })
+
+//                 }
+//             })
+
+//         } else {
+//             res.json({
+//                 status: false,
+//                 msg: ret.msg
+//             })
+//         }
+
+//     })
+// })
 // 查询博客列表
 /* 
     query: 查询条件
