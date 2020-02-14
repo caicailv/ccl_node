@@ -117,35 +117,36 @@ router.post("/emit_blog", (req, res) => {
     })
 });
 // 删除
-// router.post('/delete_blog',(req,res)=>{
-//     testToken(token, (ret) => {
-//         if (ret.status) {
-//             let _id = req.body._id;
-//             delete req.body._id;
-//             Blog.findOneAndUpdate(_id, req.body, { useFindAndModify: false }, (err, ret) => {
-//                 if (err) {
-//                     res.json({
-//                         status: false,
-//                         msg: ret.msg
-//                     })
-//                 } else {
-//                     res.json({
-//                         status: true,
-//                         msg: '修改成功'
-//                     })
+router.post('/delete_blog', (req, res) => {
+    testToken(token, (ret) => {
+        if (ret.status) {
+            let _id = req.body._id;
+            Blog.remove({
+                _id
+            }, (err, ret) => {
+                if (err) {
+                    res.json({
+                        status: false,
+                        msg: ret.msg
+                    })
+                } else {
+                    res.json({
+                        status: true,
+                        msg: '删除成功'
+                    })
 
-//                 }
-//             })
+                }
+            })
 
-//         } else {
-//             res.json({
-//                 status: false,
-//                 msg: ret.msg
-//             })
-//         }
+        } else {
+            res.json({
+                status: false,
+                msg: ret.msg
+            })
+        }
 
-//     })
-// })
+    })
+})
 // 查询博客列表
 /* 
     query: 查询条件
@@ -155,13 +156,12 @@ router.get('/query_blog', (req, res) => {
         if (err !== null) {
             res.json({
                 status: false,
-                msg: '查询失败'
+                msg: '暂无数据'
             })
         } else {
             let arr = JSON.parse(JSON.stringify(ret));
             arr.forEach(el => {
                 el.date = moment(el.date).format("YYYY-MM-DD hh:mm");
-                // el.content = el.content.substr(0,30)+"...";
             });
             res.json({
                 status: true,
@@ -176,10 +176,10 @@ router.get('/query_blog', (req, res) => {
 */
 router.get('/query_blogdetail', (req, res) => {
     Blog.findOne(req.query, (err, doc) => {
-        if (err !== null) {
+        if (err !== null || doc === null) {
             res.json({
                 status: false,
-                msg: '查询失败'
+                msg: '数据已丢失'
             })
         } else {
             let obj = JSON.parse(JSON.stringify(doc));
@@ -258,8 +258,8 @@ function testToken(token, callback) {
 
 
     return callback({
-        status:true,
-        msg:'跳过验证'
+        status: true,
+        msg: '跳过验证'
     })
     // 取出数据库的token
     PassWord.find({}, (err, ret) => {
