@@ -57,4 +57,3 @@ const PassWord = mongoose.model('pass_word',
 module.exports = {
     Blog, PassWord
 }
-// module.exports.blog = ;

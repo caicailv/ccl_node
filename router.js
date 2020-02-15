@@ -42,7 +42,7 @@ router.post('/file/uploading', function (req, res, next) {
                     res.json({
                         status: true,
                         data: {
-                            url: `http://localhost:${serverConfig.localhost}${dstPath.substring(1, dstPath.length)}`,
+                            url: `${serverConfig.domainName}:${serverConfig.localhost}${dstPath.substring(1, dstPath.length)}`,
                         }
                     });
                 }
@@ -59,8 +59,10 @@ router.post("/add_blog", (req, res) => {
     testToken(token, (ret) => {
         if (ret.status) {
             let params = req.body;
+            params.date = new Date();
             delete params._id;
             params = JSON.parse(JSON.stringify(params));
+            let Blog = require('./model/mong').Blog;
             new Blog(params).save((err, ret) => {
                 if (err) {
                     res.json({
@@ -92,6 +94,7 @@ router.post("/emit_blog", (req, res) => {
         if (ret.status) {
             let _id = req.body._id;
             delete req.body._id;
+            req.body.date = new Date();
             Blog.findOneAndUpdate(_id, req.body, { useFindAndModify: false }, (err, ret) => {
                 if (err) {
                     res.json({
