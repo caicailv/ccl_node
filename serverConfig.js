@@ -1,6 +1,6 @@
 const serverConfig = {
     localhost:3001,
-    password:'123456',
+    password:'130905',
     domainName:'http://www.caicailv.cn'
 
 };

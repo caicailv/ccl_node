@@ -22,29 +22,57 @@ db.on('connected', function (err) {
         // console.log('连接数据库成功!');
     }
 });
-// 生成blog_schema(数据库约束)
-const blogSchema = new Schema({
-    title: {
-        required: true,
-        type: String,
-    },
-    content: {
-        type: String
-    },
-    date: {
-        required: true,
-        type: Date,
-        default: new Date()
-    },
-    type: {
-        required: true,
-        type: String,
-    },
-    img_arr: { type: Array }
-});
-// 生成数据表
-const Blog = mongoose.model('blog', blogSchema);
+// 技术博客
+const Skill = mongoose.model('skill',
+    new Schema({
+        title: {
+            required: true,
+            type: String,
+        },
+        content: {
+            type: String
+        },
+        tips: {
+            type: Array
+        },
+        date: {
+            required: true,
+            type: Date,
+        },
+    })
+);
+// 随笔
+const Essay = mongoose.model('essay',
+    new Schema({
+        title: {
+            required: true,
+            type: String
+        },
+        date: {
+            required: true,
+            type: Date
+        },
+        content: {
+            type: String
+        },
+    })
+)
+// 图片
+const Photo = mongoose.model('photo',
+    new Schema({
+        title: {
+            required: true,
+            type: String,
+        },
+        date: {
+            required: true,
+            type: Date,
+        },
+        photos: { type: Array }
+    })
+)
 
+// 密码
 const PassWord = mongoose.model('pass_word',
     new Schema({
         token: {
@@ -55,5 +83,5 @@ const PassWord = mongoose.model('pass_word',
 
 
 module.exports = {
-    Blog, PassWord
+    Skill, Essay, Photo, PassWord
 }

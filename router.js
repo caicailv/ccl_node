@@ -1,14 +1,18 @@
-let express = require('express');
-let router = express.Router();
-let multiparty = require("multiparty");
-let path = require('path');
-let fs = require('fs');
-let serverConfig = require('./serverConfig');
-let jwt = require('jsonwebtoken');//生成token工具
-// 导入时间处理工具 moment
-const moment = require('moment');
-let Blog = require('./model/mong').Blog;
-let PassWord = require('./model/mong').PassWord;
+let express = require('express'),
+    router = express.Router(),
+    multiparty = require("multiparty"),
+    path = require('path'),
+    fs = require('fs'),
+    serverConfig = require('./serverConfig'),
+    jwt = require('jsonwebtoken'),//生成token工具
+    // 导入时间处理工具 moment
+    moment = require('moment'),
+    DataBase = require('./model/mong'),
+    Skill = DataBase.Skill,
+    Essay = DataBase.Essay,
+    Photo = DataBase.Photo,
+    PassWord = DataBase.PassWord;
+
 
 router.get('/', function (req, res) {
     res.send('欢迎使用 ccl_blog_api_cc');
@@ -52,6 +56,28 @@ router.post('/file/uploading', function (req, res, next) {
     })
 })
 
+// 根据type判断表
+function Surface(type) {
+    if (typeof type === 'string') {
+        type = Number(type);
+    }
+    let Surface = null;
+    switch (type) {
+        case 0:
+            Surface = Skill;
+            break;
+        case 1:
+            Surface = Essay;
+            break;
+        case 2:
+            Surface = Photo;
+            break;
+        default:
+            Surface = Skill;
+            break;
+    }
+    return Surface;
+}
 // 添加一条博客 
 router.post("/add_blog", (req, res) => {
     // token验证
@@ -59,11 +85,36 @@ router.post("/add_blog", (req, res) => {
     testToken(token, (ret) => {
         if (ret.status) {
             let params = req.body;
+            let SurfacePop = Surface(params.type);
             params.date = new Date();
             delete params._id;
+            // 根据type判断留什么字段
+            /* 
+              0 => 技术
+              1 => 随笔
+              2 => 照片
+            */
+            switch (params.type) {
+                case 0:
+                    delete params.img_arr;
+                    params.tips = params.skillActives;
+                    params.skillActives = 1;
+                    delete params.skillActives;
+                    break;
+                case 1:
+                    delete params.img_arr;
+                    delete params.skillActives;
+                    break;
+                case 2:
+                    delete params.skillActives;
+                    delete params.content;
+                    break;
+                default:
+                    break;
+            }
+            delete params.type;
             params = JSON.parse(JSON.stringify(params));
-            let Blog = require('./model/mong').Blog;
-            new Blog(params).save((err, ret) => {
+            new SurfacePop(params).save((err, ret) => {
                 if (err) {
                     res.json({
                         status: false,
@@ -93,9 +144,11 @@ router.post("/emit_blog", (req, res) => {
     testToken(token, (ret) => {
         if (ret.status) {
             let _id = req.body._id;
+            let type = req.body._id;
             delete req.body._id;
+            delete req.body.type;
             req.body.date = new Date();
-            Blog.findOneAndUpdate(_id, req.body, { useFindAndModify: false }, (err, ret) => {
+            Surface(type).findOneAndUpdate(_id, req.body, { useFindAndModify: false }, (err, ret) => {
                 if (err) {
                     res.json({
                         status: false,
@@ -124,7 +177,7 @@ router.post('/delete_blog', (req, res) => {
     testToken(token, (ret) => {
         if (ret.status) {
             let _id = req.body._id;
-            Blog.remove({
+            Surface(req.body.type).remove({
                 _id
             }, (err, ret) => {
                 if (err) {
@@ -155,7 +208,7 @@ router.post('/delete_blog', (req, res) => {
     query: 查询条件
 */
 router.get('/query_blog', (req, res) => {
-    Blog.find(req.query, (err, ret) => {
+    Surface(req.query.type).find({}, (err, ret) => {
         if (err !== null) {
             res.json({
                 status: false,
@@ -178,7 +231,8 @@ router.get('/query_blog', (req, res) => {
     _id : 博客id
 */
 router.get('/query_blogdetail', (req, res) => {
-    Blog.findOne(req.query, (err, doc) => {
+    let _id = req.query._id;
+    Surface(req.query.type).findOne({ _id }, (err, doc) => {
         if (err !== null || doc === null) {
             res.json({
                 status: false,
