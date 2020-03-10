@@ -144,19 +144,21 @@ router.post("/emit_blog", (req, res) => {
     testToken(token, (ret) => {
         if (ret.status) {
             let _id = req.body._id;
-            let type = req.body._id;
+            let type = req.body.type;
             delete req.body._id;
             delete req.body.type;
             req.body.date = new Date();
-            Surface(type).findOneAndUpdate(_id, req.body, { useFindAndModify: false }, (err, ret) => {
+            Surface(type).findOneAndUpdate({ _id }, req.body, { useFindAndModify: false }, (err, ret) => {
                 if (err) {
                     res.json({
                         status: false,
                         msg: ret.msg
                     })
                 } else {
+                    ret.date
                     res.json({
                         status: true,
+                        data: ret,
                         msg: '修改成功'
                     })
 
@@ -217,7 +219,7 @@ router.get('/query_blog', (req, res) => {
         } else {
             let arr = JSON.parse(JSON.stringify(ret));
             arr.forEach(el => {
-                el.date = moment(el.date).format("YYYY-MM-DD hh:mm");
+                el.date = moment(el.date).format("YYYY-MM-DD HH:mm");
             });
             res.json({
                 status: true,
