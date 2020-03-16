@@ -147,6 +147,7 @@ router.post("/emit_blog", (req, res) => {
             let type = req.body.type;
             delete req.body._id;
             delete req.body.type;
+            req.body.tips = req.body.skillActives;
             req.body.date = new Date();
             Surface(type).findOneAndUpdate({ _id }, req.body, { useFindAndModify: false }, (err, ret) => {
                 if (err) {
